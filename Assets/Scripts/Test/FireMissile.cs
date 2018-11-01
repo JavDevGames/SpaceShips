@@ -29,11 +29,6 @@ public class FireMissile : MonoBehaviour
                 SpawnMissile();
             }
         }
-
-        for(int i = 0; i < mMissiles.Count; ++i)
-        {
-            mMissiles[i].Update();
-        }
     }
 
     private void SpawnMissile()
@@ -44,7 +39,8 @@ public class FireMissile : MonoBehaviour
         missile.transform.parent = missileParent.transform;
         missileParent.transform.position = new Vector3();
 
-        var missileGuidance = new MissileGuidance();
+        var missileGuidance = missileParent.AddComponent<MissileGuidance>();
+
         GameObject target = targets[mCurTarget];
         Vector3 spawnPosition = RandomPointInSphere(missile.transform.position, 0.5f);
         missileParent.transform.position = this.transform.position + spawnPosition;

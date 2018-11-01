@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissileGuidance
+public class MissileGuidance : MonoBehaviour
 {
     private Vector3 mSpawnOffset;
     private GameObject mMissile;
@@ -24,7 +24,7 @@ public class MissileGuidance
         mMissile = missile;
         mInternalTime = Time.time * UnityEngine.Random.Range(-10.0f, 10.0f);
         mTarget = target;
-        mSpeed = 8.0f;
+        mSpeed = 8.0f + UnityEngine.Random.Range(-2.0f, 2.0f);
         mMissileParent = missileParent;
         mTargetOffset = new Vector3()
         {
@@ -75,9 +75,16 @@ public class MissileGuidance
             newPos *= 0.9f;
 
             mMissile.transform.localPosition = newPos;
+
+            if (dist < 1.0f)
+            {
+                Destroy(gameObject, 0.1f);
+            }
         }
         else
         {
+            dist = Mathf.Clamp(dist, 4, 7);
+
             Vector3 parentPos = mMissileParent.transform.position;
             Vector3 newPos = new Vector3();
             mInternalTime += (Time.deltaTime * dist);
@@ -85,8 +92,10 @@ public class MissileGuidance
             float sinDist = Mathf.Sin(((float)(Math.Cos(mInternalTime) + Math.Sin(mInternalTime * 0.25f))));
             newPos.x = sinDist * 1.2f;
             newPos.y = sinDist * 0.8f;
-            //newPos.z = sinDist * 1.2f;
+            newPos.z = sinDist * 1.2f;
             mMissile.transform.localPosition = newPos;
+
+           
         }
     }
 }
