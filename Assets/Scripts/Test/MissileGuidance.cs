@@ -17,12 +17,15 @@ public class MissileGuidance : MonoBehaviour
     private int mCurIdx;
     private GameObject mMissileParent;
     private Vector3 mTargetOffset;
+    private AnimationCurve[] mAnimCurves;
+    private Vector3 mCurveIndeces;
+    private float mDuration;
 
-    public void Init(GameObject missileParent, GameObject missile, GameObject target, Vector3 spawnPosition)
+    public void Init(GameObject missileParent, GameObject missile, GameObject target, Vector3 spawnPosition, AnimationCurve[] animCurves)
     {
         mSpawnOffset = spawnPosition;
         mMissile = missile;
-        mInternalTime = Time.time * UnityEngine.Random.Range(-10.0f, 10.0f);
+        mInternalTime = 0;
         mTarget = target;
         mSpeed = 8.0f + UnityEngine.Random.Range(-2.0f, 2.0f);
         mMissileParent = missileParent;
@@ -32,6 +35,16 @@ public class MissileGuidance : MonoBehaviour
             y = UnityEngine.Random.Range(-0.4f, 0.4f),
             z = UnityEngine.Random.Range(-0.4f, 0.4f)
         };
+
+        mAnimCurves = animCurves;
+        mCurveIndeces = new Vector3()
+        {
+            x = (int)UnityEngine.Random.Range(0, mAnimCurves.Length - 1),
+            y = (int)UnityEngine.Random.Range(0, mAnimCurves.Length - 1),
+            z = (int)UnityEngine.Random.Range(0, mAnimCurves.Length - 1)
+        };
+         
+        mDuration = 3.0f;
     }
 
 
@@ -83,19 +96,45 @@ public class MissileGuidance : MonoBehaviour
         }
         else
         {
+            /*
             dist = Mathf.Clamp(dist, 4, 7);
 
             Vector3 parentPos = mMissileParent.transform.position;
             Vector3 newPos = new Vector3();
             mInternalTime += (Time.deltaTime * dist);
 
-            float sinDist = Mathf.Sin(((float)(Math.Cos(mInternalTime) + Math.Sin(mInternalTime * 0.25f))));
+            float sinDist = Mathf.Sin(((float)(Math.Cos(mInternalTime) + dist * Math.Sin(mInternalTime * 0.25f))));
+            float yWave = Mathf.Sin(((float)(dist * Math.Sin(mInternalTime * 0.25f))));
             newPos.x = sinDist * 1.2f;
-            newPos.y = sinDist * 0.8f;
-            newPos.z = sinDist * 1.2f;
+            newPos.y = yWave * 0.8f;
+            newPos.z = sinDist * 0.6f;
+            */
+
+            mInternalTime += (Time.deltaTime);
+
+            AnimationCurve curCurveX = mAnimCurves[(int) mCurveIndeces.x];
+            AnimationCurve curCurveY = mAnimCurves[(int) mCurveIndeces.y];
+            AnimationCurve curCurveZ = mAnimCurves[(int) mCurveIndeces.z];
+
+            float progress = mInternalTime / mDuration;
+            progress = Mathf.Clamp(progress, 0.0f, 1.0f);
+
+            Vector3 newPos = new Vector3();
+
+            newPos.x = curCurveX.Evaluate(progress);
+            newPos.y = curCurveY.Evaluate(progress);
+            newPos.z = curCurveZ.Evaluate(progress);
+
             mMissile.transform.localPosition = newPos;
 
-           
+            if(progress >= 1.0f)
+            {
+                mInternalTime = 0;
+
+                mCurveIndeces.x = UnityEngine.Random.Range(0, mAnimCurves.Length - 1);
+                mCurveIndeces.y = UnityEngine.Random.Range(0, mAnimCurves.Length - 1);
+                mCurveIndeces.z = UnityEngine.Random.Range(0, mAnimCurves.Length - 1);
+            }
         }
     }
 }

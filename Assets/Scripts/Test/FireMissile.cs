@@ -11,6 +11,8 @@ public class FireMissile : MonoBehaviour
 
     private int mCurTarget;
     private List<MissileGuidance> mMissiles;
+
+    public AnimationCurve[] animCurves;
     
     // Start is called before the first frame update
     void Start()
@@ -44,7 +46,7 @@ public class FireMissile : MonoBehaviour
         GameObject target = targets[mCurTarget];
         Vector3 spawnPosition = RandomPointInSphere(missile.transform.position, 0.5f);
         missileParent.transform.position = this.transform.position + spawnPosition;
-        missileGuidance.Init(missileParent, missile, target, spawnPosition);
+        missileGuidance.Init(missileParent, missile, target, spawnPosition, animCurves);
 
         mCurTarget = (mCurTarget + 1) % targets.Length;
 
