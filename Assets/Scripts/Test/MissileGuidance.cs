@@ -20,14 +20,16 @@ public class MissileGuidance : MonoBehaviour
     private AnimationCurve[] mAnimCurves;
     private Vector3 mCurveIndeces;
     private float mDuration;
+    private float mAmplitude;
 
-    public void Init(GameObject missileParent, GameObject missile, GameObject target, Vector3 spawnPosition, AnimationCurve[] animCurves)
+    public void Init(GameObject missileParent, GameObject missile, GameObject target, Vector3 spawnPosition, AnimationCurve[] animCurves, float speed, float amplitude)
     {
         mSpawnOffset = spawnPosition;
         mMissile = missile;
         mInternalTime = 0;
         mTarget = target;
-        mSpeed = 8.0f + UnityEngine.Random.Range(-2.0f, 2.0f);
+        mSpeed = speed + UnityEngine.Random.Range(-2.0f, 2.0f);
+        mAmplitude = amplitude;
         mMissileParent = missileParent;
         mTargetOffset = new Vector3()
         {
@@ -96,20 +98,6 @@ public class MissileGuidance : MonoBehaviour
         }
         else
         {
-            /*
-            dist = Mathf.Clamp(dist, 4, 7);
-
-            Vector3 parentPos = mMissileParent.transform.position;
-            Vector3 newPos = new Vector3();
-            mInternalTime += (Time.deltaTime * dist);
-
-            float sinDist = Mathf.Sin(((float)(Math.Cos(mInternalTime) + dist * Math.Sin(mInternalTime * 0.25f))));
-            float yWave = Mathf.Sin(((float)(dist * Math.Sin(mInternalTime * 0.25f))));
-            newPos.x = sinDist * 1.2f;
-            newPos.y = yWave * 0.8f;
-            newPos.z = sinDist * 0.6f;
-            */
-
             mInternalTime += (Time.deltaTime);
 
             AnimationCurve curCurveX = mAnimCurves[(int) mCurveIndeces.x];
@@ -121,9 +109,9 @@ public class MissileGuidance : MonoBehaviour
 
             Vector3 newPos = new Vector3();
 
-            newPos.x = curCurveX.Evaluate(progress);
-            newPos.y = curCurveY.Evaluate(progress);
-            newPos.z = curCurveZ.Evaluate(progress);
+            newPos.x = curCurveX.Evaluate(progress) * mAmplitude;
+            newPos.y = curCurveY.Evaluate(progress) * mAmplitude;
+            newPos.z = curCurveZ.Evaluate(progress) * mAmplitude;
 
             mMissile.transform.localPosition = newPos;
 
