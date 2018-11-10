@@ -1121,6 +1121,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: StarSparrow3
       objectReference: {fileID: 0}
+    - target: {fileID: 23209102352252818, guid: 5a59e7f141bdb514d90a220630e435ff,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23209102352252818, guid: 5a59e7f141bdb514d90a220630e435ff,
+        type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23209102352252818, guid: 5a59e7f141bdb514d90a220630e435ff,
+        type: 3}
+      propertyPath: m_ReflectionProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a59e7f141bdb514d90a220630e435ff, type: 3}
 --- !u!4 &1988792647 stripped
