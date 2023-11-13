@@ -33,6 +33,8 @@ public class FireMissile : MonoBehaviour
             {
                 SpawnMissile();
             }
+
+            mCurTarget = (mCurTarget + 1) % targets.Length;
         }
     }
 
@@ -50,8 +52,6 @@ public class FireMissile : MonoBehaviour
         Vector3 spawnPosition = RandomPointInSphere(missile.transform.position, 0.5f);
         missileParent.transform.position = this.transform.position + spawnPosition;
         missileGuidance.Init(missileParent, missile, target, spawnPosition, animCurves, missileSpeed, missileAmplitude);
-
-        mCurTarget = (mCurTarget + 1) % targets.Length;
 
         mMissiles.Add(missileGuidance);
     }
