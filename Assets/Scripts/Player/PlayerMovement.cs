@@ -7,6 +7,13 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     public float rotationSpeed;
     public float verticalSpeed;
+    public float horizontalSpeed;
+    public float rotationDampening = 0.85f;
+    public float forwardSpeedDampening = 0.92f;
+
+    private Vector3 mForwardSpeed;
+    private Vector3 mVerticalSpeed;
+    private Vector3 mRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,57 +26,44 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKey(KeyCode.W))
         {
             Vector3 forward = transform.forward;
-            forward *= speed;
-            Vector3 newPos = transform.position + forward;
-            transform.position = newPos;
+            mForwardSpeed = forward * speed;
+            
         }
         else if (Input.GetKey(KeyCode.S))
         {
             Vector3 forward = transform.forward;
-            forward *= -speed;
-            Vector3 newPos = transform.position + forward;
-            transform.position = newPos;
+            mForwardSpeed = forward * -speed;
+        }
+
+        Vector3 newPos = transform.position + mForwardSpeed;
+        transform.position = newPos;
+
+        mForwardSpeed *= 0.98f;
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            mVerticalSpeed.y -= verticalSpeed;
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            mVerticalSpeed.y += verticalSpeed;
         }
 
         if (Input.GetKey(KeyCode.A))
         {
-            Vector3 right = transform.right;
-            right *= -speed;
-            Vector3 newPos = transform.position + right;
-            transform.position = newPos;
+            mRotation.y -= rotationSpeed;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            Vector3 left = transform.right;
-            left *= speed;
-            Vector3 newPos = transform.position + left;
-            transform.position = newPos;
+            mRotation.y += rotationSpeed;
         }
 
-        if(Input.GetKey(KeyCode.Q))
-        {
-            Vector3 offset = transform.position;
-            offset.y -= verticalSpeed;
-            transform.position = offset;
-        }
-        else if (Input.GetKey(KeyCode.E))
-        {
-            Vector3 offset = transform.position;
-            offset.y += verticalSpeed;
-            transform.position = offset;
-        }
+        transform.position += mVerticalSpeed;
+        mVerticalSpeed *= 0.8f;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            Vector3 rotation = transform.rotation.eulerAngles;
-            rotation.y -= rotationSpeed;            
-            transform.rotation = Quaternion.Euler(rotation);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            Vector3 rotation = transform.rotation.eulerAngles;
-            rotation.y += rotationSpeed;
-            transform.rotation = Quaternion.Euler(rotation);
-        }
+        Vector3 rotation = transform.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(rotation + mRotation);
+
+        mRotation.y *= rotationDampening;
     }
 }
